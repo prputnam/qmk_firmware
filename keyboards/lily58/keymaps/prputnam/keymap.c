@@ -183,6 +183,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // Let QMK process the KC_BSPC keycode as usual outside of shift
         return true;
       }
+    case KC_GESC:
+      {
+        static bool gesckey_registered;
+        if (record->event.pressed) {
+            if (mod_state & MOD_MASK_GUI) {
+                del_mods(MOD_MASK_GUI);
+                register_code(KC_GRV);
+                gesckey_registered = true;
+                set_mods(mod_state);
+                return false;
+            }
+        } else {
+            if (gesckey_registered) {
+                unregister_code(KC_GRV);
+                gesckey_registered = false;
+                return false;
+            }
+        }`
+        return true;
+      }
   }
   return true;
 };
